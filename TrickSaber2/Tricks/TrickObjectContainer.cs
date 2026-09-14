@@ -23,11 +23,13 @@ internal class TrickObjectContainer : MonoBehaviour
     private readonly Dictionary<Type, ITrick> tricks = [];
     
     [Inject]
-    public void Inject(
-        InitData initData,
-        TimeHelper timeHelper)
+    private void Inject(TimeHelper timeHelper)
     {
         this.timeHelper = timeHelper;
+    }
+
+    public void Initialize(InitData initData)
+    {
         trickObjects = initData.TrickObjects;
         movementTracker = initData.MovementTracker;
         rotationContainer = new GameObject("RotationContainer").transform;

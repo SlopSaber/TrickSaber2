@@ -24,6 +24,12 @@ internal class AppInstaller : Installer
 
         Container
             .BindFactory<TrickObjectContainer.InitData, TrickObjectContainer, TrickObjectContainer.Factory>()
-            .FromComponentInNewPrefab(new GameObject(nameof(TrickObjectContainer), typeof(TrickObjectContainer)));
+            .FromMethod((container, initData) =>
+            {
+                var gameObject = new GameObject(nameof(TrickObjectContainer));
+                var trickObjectContainer = container.InstantiateComponent<TrickObjectContainer>(gameObject);
+                trickObjectContainer.Initialize(initData);
+                return trickObjectContainer;
+            });
     }
 }
