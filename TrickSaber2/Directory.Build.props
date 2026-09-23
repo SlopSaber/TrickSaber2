@@ -25,6 +25,11 @@
   <PropertyGroup>
     <BSMTProjectType>BSIPA</BSMTProjectType>
     <GenerateManifest>true</GenerateManifest>
+    <BeatSaberDir>D:\BSManager\BSInstances\1.45.1</BeatSaberDir>
+    <GameDirectory>$(BeatSaberDir)</GameDirectory>
+    <ImportBSMTTargets>true</ImportBSMTTargets>
+    <CopyPDB>false</CopyPDB>
+    <DisableCopyToGame>false</DisableCopyToGame>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)' != 'Release'">
