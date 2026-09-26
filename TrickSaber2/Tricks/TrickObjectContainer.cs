@@ -38,6 +38,7 @@ internal class TrickObjectContainer : MonoBehaviour
     }
 
     private IInputHandler? activeHandler;
+    private ITrick? activeTrick;
     private bool isToggleable;
     private bool isStopping;
     
@@ -57,7 +58,7 @@ internal class TrickObjectContainer : MonoBehaviour
         
         if (activeHandler != null)
         {
-            var currentTrick = GetTrick(activeHandler.TrickConfig.Type);
+            var currentTrick = activeTrick!;
             var trickChanged = activeHandler != handler;
             if (trickChanged)
             {
@@ -81,6 +82,7 @@ internal class TrickObjectContainer : MonoBehaviour
 
         Plugin.Log.Debug($"Starting {handler.TrickConfig.Type} at {Node}");
         var startedTrick = GetTrick(handler.TrickConfig.Type);
+        activeTrick = startedTrick;
         startedTrick.StartTrick(handler.TrickConfig);
         startedTrick.SetInputValue(handler.GetInputValue());
     }
@@ -102,7 +104,7 @@ internal class TrickObjectContainer : MonoBehaviour
         isStopping = true;
         
         Plugin.Log.Debug($"Stopping {handler.TrickConfig.Type} at {Node}");
-        GetTrick(handler.TrickConfig.Type).StopTrick(finishedCallback: HandleStopTrickFinishedCallback);
+        activeTrick!.StopTrick(finishedCallback: HandleStopTrickFinishedCallback);
     }
 
     public void CancelActiveTrick()
@@ -110,7 +112,7 @@ internal class TrickObjectContainer : MonoBehaviour
         if (activeHandler != null)
         {
             Plugin.Log.Debug($"Cancelling {activeHandler.TrickConfig.Type} at {Node}");
-            GetTrick(activeHandler.TrickConfig.Type).CancelTrick();
+            activeTrick?.CancelTrick();
             HandleStopTrickFinishedCallback();
         }
     }
@@ -143,6 +145,7 @@ internal class TrickObjectContainer : MonoBehaviour
             trickObject.ResetParent();
         }
         activeHandler = null;
+        activeTrick = null;
         isToggleable = false;
         isStopping = false;
     }

@@ -40,6 +40,11 @@ internal class TimeWarpManager : IInitializable, IDisposable
     public void Dispose()
     {
         audioTimeSyncController.stateChangedEvent -= HandleAudioTimeSyncControllerStateChanged;
+        if (startTimeWarpAnimation != null) coroutineStarter.StopCoroutine(startTimeWarpAnimation);
+        if (endTimeWarpAnimation != null) coroutineStarter.StopCoroutine(endTimeWarpAnimation);
+        startTimeWarpAnimation = null;
+        endTimeWarpAnimation = null;
+        activeTimeWarps.Clear();
     }
 
     public void StartTimeWarp(IInputHandler handler)

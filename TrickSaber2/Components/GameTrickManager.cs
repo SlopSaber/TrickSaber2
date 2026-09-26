@@ -66,10 +66,17 @@ internal class GameTrickManager : MonoBehaviour
             timeWarpManager.StartTimeWarp(handler);
         }
         
-        foreach (var container in GetTrickContainerForHandler(handler))
+        if (handler is IVRInputHandler vrInputHandler
+            && trickContainers.TryGetValue(vrInputHandler.Node, out var container))
         {
             container.StartTrick(handler);
         }
+#if DEBUG
+        else if (handler is KeyboardInputHandler)
+        {
+            foreach (var (_, value) in trickContainers) value.StartTrick(handler);
+        }
+#endif
     }
 
     private void HandleInputListenerInputDeactivated(IInputHandler handler)
@@ -79,24 +86,15 @@ internal class GameTrickManager : MonoBehaviour
             timeWarpManager.StopTimeWarp(handler);
         }
         
-        foreach (var container in GetTrickContainerForHandler(handler))
-        {
-            container.StopTrick(handler);
-        }
-    }
-
-    private IEnumerable<TrickObjectContainer> GetTrickContainerForHandler(IInputHandler handler)
-    {
         if (handler is IVRInputHandler vrInputHandler
             && trickContainers.TryGetValue(vrInputHandler.Node, out var container))
         {
-            yield return container;
+            container.StopTrick(handler);
         }
 #if DEBUG
         else if (handler is KeyboardInputHandler)
         {
-            foreach (var (_, value) in trickContainers)
-                yield return value;
+            foreach (var (_, value) in trickContainers) value.StopTrick(handler);
         }
 #endif
     }

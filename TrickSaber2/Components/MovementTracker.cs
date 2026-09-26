@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace TrickSaber2.Components;
@@ -15,6 +16,16 @@ internal class MovementTracker : MonoBehaviour
     private int currentProbeIndex;
     
     public Vector3 AngularVelocity { get; private set; }
+
+    private void OnEnable()
+    {
+        previousPosition = transform.position;
+        previousRotation = transform.rotation;
+        currentProbeIndex = 0;
+        AngularVelocity = Vector3.zero;
+        Array.Clear(velocityBuffer, 0, velocityBuffer.Length);
+        Array.Clear(angularVelocityBuffer, 0, angularVelocityBuffer.Length);
+    }
 
     public void Update()
     {

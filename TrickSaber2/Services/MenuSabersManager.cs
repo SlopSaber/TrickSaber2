@@ -19,6 +19,7 @@ internal class MenuSabersManager : ITickable
     private readonly MockSaber leftSaber;
     private readonly MockSaber rightSaber;
     private readonly Dictionary<XRNode, TrickObjectContainer> trickContainers = [];
+    private readonly List<MovementTracker> movementTrackers = [];
 
     private readonly InputListener inputListener = new();
     private bool enabled;
@@ -46,6 +47,7 @@ internal class MenuSabersManager : ITickable
         {
             saber.transform.SetParent(parent, false);
             var tracker = parent.gameObject.AddComponent<MovementTracker>();
+            movementTrackers.Add(tracker);
             var trickObject = saber.gameObject.AddComponent<TrickObject>();
             var trickObjectContainer = trickObjectContainerFactory.Create(new(node, [trickObject], tracker));
             trickContainers.Add(node, trickObjectContainer);
@@ -54,6 +56,7 @@ internal class MenuSabersManager : ITickable
 
     public void UpdateInputListeners()
     {
+        CancelActiveTricks();
         inputListener.SetHandlers(pluginConfig.Tricks.ToHandlers());
     }
 
@@ -76,6 +79,7 @@ internal class MenuSabersManager : ITickable
         inputListener.InputActivatedEvent -= HandleInputListenerInputActivated;
         inputListener.InputDeactivatedEvent -= HandleInputListenerInputDeactivated;
         enabled = false;
+        CancelActiveTricks();
         
         menuPointers.SetPointerVisibility(true);
         SetSaberVisibility(false);
@@ -88,39 +92,43 @@ internal class MenuSabersManager : ITickable
 
     private void SetSaberVisibility(bool isVisible)
     {
+        foreach (var tracker in movementTrackers) tracker.enabled = isVisible;
         leftSaber.gameObject.SetActive(isVisible);
         rightSaber.gameObject.SetActive(isVisible);
     }
 
     private void HandleInputListenerInputActivated(IInputHandler handler)
     {
-        foreach (var container in GetTrickContainerForHandler(handler))
-        {
-            container.StartTrick(handler);
-        }
-    }
-
-    private void HandleInputListenerInputDeactivated(IInputHandler handler)
-    {
-        foreach (var container in GetTrickContainerForHandler(handler))
-        {
-            container.StopTrick(handler);
-        }
-    }
-
-    private IEnumerable<TrickObjectContainer> GetTrickContainerForHandler(IInputHandler handler)
-    {
         if (handler is IVRInputHandler vrInputHandler
             && trickContainers.TryGetValue(vrInputHandler.Node, out var container))
         {
-            yield return container;
+            container.StartTrick(handler);
         }
 #if DEBUG
         else if (handler is KeyboardInputHandler)
         {
-            foreach (var (_, value) in trickContainers)
-                yield return value;
+            foreach (var (_, value) in trickContainers) value.StartTrick(handler);
         }
 #endif
+    }
+
+    private void HandleInputListenerInputDeactivated(IInputHandler handler)
+    {
+        if (handler is IVRInputHandler vrInputHandler
+            && trickContainers.TryGetValue(vrInputHandler.Node, out var container))
+        {
+            container.StopTrick(handler);
+        }
+#if DEBUG
+        else if (handler is KeyboardInputHandler)
+        {
+            foreach (var (_, value) in trickContainers) value.StopTrick(handler);
+        }
+#endif
+    }
+
+    private void CancelActiveTricks()
+    {
+        foreach (var (_, container) in trickContainers) container.CancelActiveTrick();
     }
 }
