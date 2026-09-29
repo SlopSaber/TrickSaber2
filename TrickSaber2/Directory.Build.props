@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- This file contains project properties used by the build. -->
 <Project>
 
@@ -8,7 +8,7 @@
     <PluginName>TrickSaber2</PluginName>
     <Authors>qqrz997</Authors>
     <Version>0.1.0</Version>
-    <GameVersion>1.45.1</GameVersion>
+    <GameVersion>1.45.2</GameVersion>
     <Description>A mod for performing tricks. 2.</Description>
     <!--<PluginIcon></PluginIcon>-->
     <!--<ProjectSource></ProjectSource>-->
@@ -25,7 +25,7 @@
   <PropertyGroup>
     <BSMTProjectType>BSIPA</BSMTProjectType>
     <GenerateManifest>true</GenerateManifest>
-    <BeatSaberDir>D:\BSManager\BSInstances\1.45.1</BeatSaberDir>
+    <BeatSaberDir>D:\BSManager\BSInstances\1.45.2</BeatSaberDir>
     <GameDirectory>$(BeatSaberDir)</GameDirectory>
     <ImportBSMTTargets>true</ImportBSMTTargets>
     <CopyPDB>false</CopyPDB>
