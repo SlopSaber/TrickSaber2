@@ -6,6 +6,8 @@
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <EnableFrameworkPathOverride>true</EnableFrameworkPathOverride>
+        <BeatSaberDir Condition="'$(BeatSaberDir)' == ''">$(GameDirectory)</BeatSaberDir>
+        <GameDirectory Condition="'$(GameDirectory)' == ''">$(BeatSaberDir)</GameDirectory>
         <FrameworkPathOverride>$(BeatSaberDir)\Beat Saber_Data\Managed</FrameworkPathOverride>
         <MarkPackageReferencesAsExternallyResolved>false</MarkPackageReferencesAsExternallyResolved>
     </PropertyGroup>

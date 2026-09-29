@@ -10,17 +10,14 @@ namespace TrickSaber2.Services;
 internal class TimeWarpManager : IInitializable, IDisposable
 {
     private readonly AudioTimeSyncController audioTimeSyncController;
-    private readonly StandardLevelGameplayManager standardLevelGameplayManager;
     private readonly ICoroutineStarter coroutineStarter;
     private readonly WaitForFixedUpdate waitForFixedUpdate = new();
 
     public TimeWarpManager(
         AudioTimeSyncController audioTimeSyncController,
-        StandardLevelGameplayManager standardLevelGameplayManager,
         ICoroutineStarter coroutineStarter)
     {
         this.audioTimeSyncController = audioTimeSyncController;
-        this.standardLevelGameplayManager = standardLevelGameplayManager;
         this.coroutineStarter = coroutineStarter;
     }
 
